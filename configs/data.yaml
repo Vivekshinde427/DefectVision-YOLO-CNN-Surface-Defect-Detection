@@ -3,6 +3,5 @@ train: images/train
 val: images/val
 test: images/val
 
-# number of classes and names (order must match label ids in labels/*.txt)
 nc: 4
 names: ['crack', 'rust', 'dent', 'hole']
