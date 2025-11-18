@@ -13,7 +13,6 @@ def parse_args():
     p.add_argument('--batch', type=int, default=8)
     p.add_argument('--name', type=str, default='defectvision_exp')
 
-    # FIXED FOR YOUR SYSTEM (NO GPU)
     p.add_argument('--device', type=str, default='auto', help='cuda or cpu or auto')
 
     return p.parse_args()
@@ -21,7 +20,6 @@ def parse_args():
 def main():
     args = parse_args()
 
-    # ensure paths are correct
     data_path = args.data
     if not os.path.exists(data_path):
         raise FileNotFoundError(f"Data file not found: {data_path}. Update --data to point to your data.yaml")
@@ -29,7 +27,7 @@ def main():
     print("Starting training with config:")
     print(vars(args))
 
-    model = YOLO(args.model)  # loading pretrained yolov8 model
+    model = YOLO(args.model)  
     model.train(
         data=data_path,
         epochs=args.epochs,
