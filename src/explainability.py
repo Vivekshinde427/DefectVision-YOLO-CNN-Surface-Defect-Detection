@@ -8,17 +8,15 @@ from pytorch_grad_cam.utils.image import show_cam_on_image
 import torch
 import torchvision.transforms as T
 
-# NOTE: this script assumes a PyTorch backbone available in the YOLO model.
-# For simplicity we will get a detection, crop bbox, run GradCAM on the model's backbone (if accessible).
+
 
 MODEL_WEIGHTS = 'runs/detect/defectvision_exp/weights/best.pt'
-SOURCE_IMAGE = 'assets/sample.jpg'  # replace with a path to test image
+SOURCE_IMAGE = 'assets/sample.jpg'  
 
 def get_backbone_and_target(model):
-    # Attempt to access backbone (this might vary by ultralytics version)
-    # We'll try common attributes. If not found, this script will need small edits.
+   
     try:
-        backbone = model.model.model[0]  # may vary
+        backbone = model.model.model[0] 
     except Exception:
         backbone = None
     return backbone
@@ -34,8 +32,7 @@ def main():
         print("No detections found.")
         return
 
-    # pick the first detection for demo
-    box = res.boxes.xyxy[0].cpu().numpy().astype(int)  # x1,y1,x2,y2
+    box = res.boxes.xyxy[0].cpu().numpy().astype(int)  
     conf = float(res.boxes.conf[0].cpu().numpy())
     cls = int(res.boxes.cls[0].cpu().numpy())
 
@@ -44,7 +41,6 @@ def main():
         print("Invalid crop, skip.")
         return
 
-    # prepare crop for model
     transform = T.Compose([
         T.ToPILImage(),
         T.Resize((224,224)),
@@ -52,12 +48,9 @@ def main():
     ])
     input_tensor = transform(crop).unsqueeze(0)
 
-    # Try to access a backbone (highly dependent on ultralytics internal model structure)
     try:
-        backbone = model.model.model[0]  # may require change per ultralytics version
-        # use GradCAM on backbone last conv layer - user may need to adjust target_layer
+        backbone = model.model.model[0]  
         target_layer = None
-        # find a Conv2d layer: search backwards
         for m in reversed(list(backbone.modules())):
             if isinstance(m, torch.nn.Conv2d):
                 target_layer = m
