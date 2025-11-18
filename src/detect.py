@@ -1,4 +1,4 @@
-# src/detect.py
+# Authoer: Vivek Shinde
 import argparse
 from ultralytics import YOLO
 import cv2
